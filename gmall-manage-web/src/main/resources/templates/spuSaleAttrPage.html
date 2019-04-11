@@ -1,0 +1,108 @@
+
+<!DOCTYPE html>
+<html lang="en"  xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<!-----------------弹出框----------------------------->
+<div id="spuSaleAttr_dlg" class="easyui-dialog" title="编辑销售属性" style="width:500px;height:400px;"
+     closed="true"  data-options="iconCls:'icon-save',resizable:true,modal:false" buttons="#spuSaleAttrBtns" >
+    <br/><br/>
+    <!------------------从基本销售属性中选择-------------><!--此处从数据库查询出商品属性-->
+    销售属性：  <select name="saleAttr" id="saleAttrSelect"  class="easyui-combobox" data-options="valueField:'id',textField:'name',url:'baseSaleAttrList'" style="width:100px">  </select>
+    <br/><br/>
+
+
+    <!----------------销售属性值列表---------------------------->
+    <table id="spuSaleAttrValueDg" class="easyui-datagrid" title="销售属性值列表"
+           data-options="singleSelect:true,method:'get',toolbar:'#spuSaleAttrValueTootbar'" ></table>
+
+
+    <!----------------销售属性值列表工具栏----------------------->
+    <div id="spuSaleAttrValueTootbar" style="padding:5px;height:auto"  >
+        <div style="margin-bottom:5px">
+            <a href="#" id="spuSaleAttrValueAddBtn" class="easyui-linkbutton" iconCls="icon-add" onclick="addSpuSaleAttrValue()" plain="true">添加</a>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="removeSpuSaleAttrValue()" >删除</a>
+        </div>
+    </div>
+
+
+    <div id="spuSaleAttrBtns">
+        <a href="#" class="easyui-linkbutton" onclick="saveSpuSaleAttr()">确 定</a>
+        <a href="#" class="easyui-linkbutton" onclick="closeSpuSaleAttr()">关 闭</a>
+    </div>
+</div>
+
+<script language="JavaScript">
+        //        初始化销售属性
+        function initSpuSaleAttrValueListDatagrid() {
+            //目的是加载之前先清除,以前的信息,目的是为了防止ID的重复.
+            $('#spuSaleAttrValueDg').datagrid('loadData', { total: 0, rows: [] });
+           d= $('#spuSaleAttrValueDg').datagrid({
+                columns:[[
+                    {field:'id',title:'销售属性编号',width:100},
+                    {field:'saleAttrValueName',title:'销售属性名称',width:200,
+                        editor:{
+                            type:"validatebox",options:{required:true}
+                        }
+                    }
+                ]],
+                onDblClickRow: function (rowIndex, rowData) {
+                    //双击开启编辑行
+                    d.datagrid("beginEdit", rowIndex);
+                    //设定当失去焦点时,退出编辑状态
+                    var valueName = rowData.valueName;
+                    $("input.datagrid-editable-input").val(valueName).bind("blur",function(evt){
+                        d.datagrid('endEdit',rowIndex);
+                    })
+                }
+            });
+        }
+        //添加行
+        function  addSpuSaleAttrValue() {
+
+            //添加一行
+            $("#spuSaleAttrValueDg").datagrid('appendRow',{
+                id: "",
+                saleAttrValueName:""
+            });
+        }
+   //     删除行
+     function removeSpuSaleAttrValue(){
+        //1.获取选中行
+        var row = $("#spuSaleAttrValueDg").datagrid("getSelected");
+        //2. 根据选中行获取行号
+         var index = $("#spuSaleAttrValueDg").datagrid("getRowIndex",row);
+        //3. 删除行
+        $('#spuSaleAttrValueDg').datagrid('deleteRow',index);
+
+     }
+
+     function saveSpuSaleAttr() {
+         //1. 获取销售属性信息
+         var id = $("#saleAttrSelect").combobox("getValue");
+     //    2. 获取选择框中的文本内容
+         var saleAttrName = $("#saleAttrSelect").combobox("getText");
+         alert(saleAttrName);
+     //    3. 获取销售属性集合
+         var spuSaleAttrValueJson = $("#spuSaleAttrValueDg").datagrid("getData");
+     //    4.将数据暂存
+         $("#spuSaleAttrDg").datagrid('appendRow',{
+             id:id,
+             saleAttrName:saleAttrName,
+             spuSaleAttrValueJson:spuSaleAttrValueJson
+         })
+     //    保存完毕关闭,对话框.
+         $("#spuSaleAttr_dlg").dialog("close");
+     }
+
+    function closeSpuSaleAttr () {
+        $("#spuSaleAttr_dlg").dialog("close");
+    }
+
+</script>
+</body>
+</html>

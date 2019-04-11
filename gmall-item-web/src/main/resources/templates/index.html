@@ -1,0 +1,49 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>thymeleaf测试模板</title>
+
+</head>
+<body>
+thymeleaf测试模板
+<hr>
+取值：<div th:text="${hello}">默认打底值</div><!-- null.name -->
+<hr>
+<!--判断-->
+<div th:if="${hello=='hello thymeleaf'}">默认打底值</div>
+<hr>
+<!--不成立,则这个标签都不存在-->
+<div th:if="${1!=1}">1=0</div>
+<hr>
+<!--遍历:类似于foreach  th:text 显示遍历的值-->
+<div th:each="string:${strings}" th:text="${string}"></div>
+<hr>
+<!--引入部分页面-->
+<div th:include="include::frag"></div>
+<hr>
+<!--引用链接-->
+<a th:href="'javascript:a(\''+${hello}+'\');'">点击</a>
+
+<script language="JavaScript">
+    function  a(hello) {
+        alert(hello);
+    }
+</script>
+<!--判断：
+<div th:if="${hello=='hello thymeleaf'}">默认打底值</div>
+<div th:if="${1==1}">1=0</div>
+<hr>
+<div th:each="string:${strings}" th:text="${string}">打底值</div>
+<hr>
+页面引入：<div th:include="include::frag"></div>
+<hr>
+函数调用：<a th:href="'javascript:a(\''+${hello}+'\');'">点击我</a>
+
+<script language="JavaScript">
+    function a(hello){
+        alert(hello);
+    }
+</script>-->
+</body>
+
+</html>

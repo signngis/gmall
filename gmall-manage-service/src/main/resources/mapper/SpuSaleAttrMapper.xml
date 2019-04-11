@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.gmall0228.manage.mapper.SpuSaleAttrMapper">
+    <select id="getSpuSaleAttrListCheckBySku" parameterType="Map" resultMap="getSpuSaleAttrListCheckBySkuMap">
+        /*INNER  JOIN :内连接   IF(ssav.sku_id is not null,'1','0') as isChecked:条件判断,不为空为1,空值为0
+
+        */
+        select attr.id as attr_id, attr.sale_attr_id,attr.sale_attr_name,sav.id as sav_id,sav.sale_attr_value_name ,ssav.sku_id
+        ,
+        IF(ssav.sku_id is not null,'1','0') as isChecked
+        from spu_sale_attr attr INNER  JOIN  spu_sale_attr_value sav
+        on
+        attr.sale_attr_id = sav.sale_attr_id
+        and attr.spu_id = sav.spu_id
+        and attr.spu_id = #{spuId}
+        left JOIN sku_sale_attr_value ssav on ssav.sale_attr_id = attr.sale_attr_id
+        and ssav.sale_attr_value_id = sav.id and ssav.sku_id = #{skuId}
+    </select>
+    <!--autoMapping: 自己根据前面设定的bean对象,根据id属性一一自己比对,对应属性-->
+    <resultMap id="getSpuSaleAttrListCheckBySkuMap" type="com.atguigu.gmall0228.bean.SpuSaleAttr" autoMapping="true">
+        <result property="id" column="attr_id"></result>
+        <collection property="spuSaleAttrValueList" ofType="com.atguigu.gmall0228.bean.SpuSaleAttrValue" autoMapping="true">
+            <result property="id" column="sav_id"></result>
+        </collection>
+    </resultMap>
+
+</mapper>

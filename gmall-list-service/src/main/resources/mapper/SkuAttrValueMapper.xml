@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.gmall0228.list.Mapper.SkuAttrValueMapper">
+    <!--根据idJoin(不重复的平台属性值id)的值查出平台属性和平台属性值-->
+    <select id="selectAttrListByValueIds"  resultMap="selectAttrListByValueIdsMap">
+        SELECT attr.id AS attr_id,val.`id` AS val_id, attr.*,val.* FROM `base_attr_info` attr,`base_attr_value` val
+        WHERE attr.`id`=val.`attr_id`
+        AND val.`id`
+        IN  (${idJoin})
+    </select>
+    <resultMap id="selectAttrListByValueIdsMap" type="com.atguigu.gmall0228.bean.BaseAttrInfo" autoMapping="true">
+        <result column="attr_id" property="id"></result>
+        <collection property="attrValueList" ofType="com.atguigu.gmall0228.bean.BaseAttrValue" autoMapping="true">
+            <result column="val_id" property="id"></result>
+        </collection>
+    </resultMap>
+</mapper>

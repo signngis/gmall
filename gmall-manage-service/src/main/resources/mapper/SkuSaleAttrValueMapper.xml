@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.gmall0228.manage.mapper.SkuSaleAttrValueMapper">
+    <select id="selectSkuSaleAttrValueListBySpu" parameterType="Map" resultMap="getSkuSaleAttrValueListBySpuMap">
+          SELECT
+             sav.id AS sav_id,
+             sav.sale_attr_value_id,
+             sku.id AS sku_id
+         FROM
+             sku_info sku,
+             sku_sale_attr_value sav
+         WHERE
+             sku.id = sav.sku_id
+         AND sku.spu_id = #{spuId}
+    </select>
+ <!--autoMapping: 自己根据前面设定的bean对象,根据id属性一一自己比对,对应属性-->
+ <resultMap id="getSkuSaleAttrValueListBySpuMap" type="com.atguigu.gmall0228.bean.SkuInfo" autoMapping="true">
+  <result property="id" column="sku_id"></result>
+  <collection property="skuSaleAttrValueList" ofType="com.atguigu.gmall0228.bean.SkuSaleAttrValue" autoMapping="true">
+   <result property="id" column="sav_id"></result>
+  </collection>
+ </resultMap>
+
+</mapper>
